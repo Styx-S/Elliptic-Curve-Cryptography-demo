@@ -119,6 +119,10 @@
     <ClInclude Include="ECC_Cryptor.h" />
     <ClInclude Include="modular_arithmetic.h" />
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ECC_Cryptor.cpp" />
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
