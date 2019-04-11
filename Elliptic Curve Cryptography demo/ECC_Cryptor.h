@@ -20,6 +20,7 @@ namespace cryptography {
 		Point getPoint(int index);
 		Point add(const Point& a, const Point& b);
 		Point mulK(const Point& a, int k);
+		const vector<Point>& getPointList() { return m_points; }
 	private:
 		void initAllPoints(); 
 		bool m_init; // set true in initAllPoints function

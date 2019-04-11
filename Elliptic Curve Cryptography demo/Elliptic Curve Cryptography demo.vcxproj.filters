@@ -32,5 +32,8 @@
     <ClCompile Include="ECC_Cryptor.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="modular_arithmetic.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

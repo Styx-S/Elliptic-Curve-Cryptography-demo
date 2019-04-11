@@ -4,7 +4,9 @@ using namespace cryptography;
 using namespace mod;
 
 #include <string>
+#include <cmath>
 using std::string;
+using std::pow;
 
 void EllipticCurve::initAllPoints() {
 	if (m_points.size() != 0)
@@ -16,7 +18,7 @@ void EllipticCurve::initAllPoints() {
 		for (int y = 0; y < m_p; y++) {
 			if (k != modPPow(y, 2, m_p))
 				continue;
-			m_points.push_back({ x,y });
+			else m_points.push_back({ x,y });
 		}
 	}
 }
@@ -69,4 +71,27 @@ Point EllipticCurve::add(const Point& p, const Point& q) {
 	np.a = modPAdd(modPAdd(modPPow(k, 2, m_p), -p.a, m_p), -q.a, m_p);
 	np.b = modPAdd(modPMul(k, modPAdd(p.a, -np.a, m_p), m_p), -p.b, m_p);
 	return np;
+}
+Point EllipticCurve::mulK(const Point& a, int k) {
+	vector<Point> result;
+	Point p = a;
+	k--;
+	result.push_back(a);
+	int n = 0;
+	while (pow(2,n) < k) {
+		result.push_back(this->add(result[n], result[n]));
+		n++;
+	}
+	while (k) {
+		int max = 0;
+		for (int i = n; i >= 0; i++) {
+			if ((int)(pow(2, i)) <= k) {
+				max = i;
+				break;
+			}
+		}
+		p = this->add(p, result[max]);
+		k -= max;
+	}
+	return p;
 }
