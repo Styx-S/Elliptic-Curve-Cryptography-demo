@@ -124,6 +124,9 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="modular_arithmetic.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="source.dat" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

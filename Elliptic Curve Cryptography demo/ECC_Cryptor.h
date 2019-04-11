@@ -20,6 +20,7 @@ namespace cryptography {
 		Point getPoint(int index);
 		Point add(const Point& a, const Point& b);
 		Point mulK(const Point& a, int k);
+		Point minus(const Point& a);
 		const vector<Point>& getPointList() { return m_points; }
 	private:
 		void initAllPoints(); 
@@ -29,11 +30,24 @@ namespace cryptography {
 	};
 
 	class ECC_Encryptor : public Encryptor {
-
+	public: 
+		ECC_Encryptor(ostream& writeResult, EllipticCurve curve) : Encryptor(writeResult), m_curve(curve) { m_ok = false; }
+		virtual Encryptor& operator<<(istream& inputSource);
+		Point chooseKG(int k, Point G);
+	private:
+		bool m_ok;
+		int m_k;
+		Point m_G;
+		Point m_Q;
+		EllipticCurve m_curve;
 	};
 
 	class ECC_Decryptor : public Decryptor {
-
+	public:
+		ECC_Decryptor(ostream& writeResult, EllipticCurve curve, Point Q, Point G) : Decryptor(writeResult), m_curve(curve) {}
+		virtual Decryptor& operator<<(istream& inputSource);
+	private:
+		EllipticCurve m_curve;
 	};
 
 }

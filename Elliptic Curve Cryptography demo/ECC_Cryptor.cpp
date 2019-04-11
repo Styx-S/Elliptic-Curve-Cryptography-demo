@@ -5,8 +5,13 @@ using namespace mod;
 
 #include <string>
 #include <cmath>
+#include <cstdlib>
+#include <ctime>
 using std::string;
 using std::pow;
+using std::time;
+using std::srand;
+using std::rand;
 
 void EllipticCurve::initAllPoints() {
 	if (m_points.size() != 0)
@@ -84,14 +89,57 @@ Point EllipticCurve::mulK(const Point& a, int k) {
 	}
 	while (k) {
 		int max = 0;
-		for (int i = n; i >= 0; i++) {
+		for (int i = n; i >= 0; i--) {
 			if ((int)(pow(2, i)) <= k) {
 				max = i;
 				break;
 			}
 		}
 		p = this->add(p, result[max]);
-		k -= max;
+		k -= pow(2,max);
 	}
 	return p;
+}
+Point EllipticCurve::minus(const Point& a) {
+	Point p = a;
+	p.b = modP(-p.b, m_p);
+	return p;
+}
+
+Point ECC_Encryptor::chooseKG(int k, Point G) {
+	m_ok = true;
+	m_G = G;
+	m_k = k;
+	m_Q = m_curve.mulK(G, k);
+	return m_Q;
+}
+
+Encryptor& ECC_Encryptor::operator<<(istream& inputSource) {
+	srand(time(NULL));
+	if (!m_ok)
+		return *this;
+	while (inputSource) {
+		char ch = inputSource.get();
+		if (ch == -1)break;
+		int size = m_curve.getPointList().size();
+		int r = rand() % size;
+		Point M = m_curve.getPointList()[ch % size];
+		Point pC1 = m_curve.add(M, m_curve.mulK(m_G, r));
+		Point pC2 = m_curve.mulK(m_G, r);
+		this->m_writeResult << pC1.a << " "<< pC1.b << " "<< pC2.a<< " " << pC2.b << " ";
+	}
+	return *this;
+}
+
+Decryptor& ECC_Decryptor::operator<<(istream& inputSource) {
+	while (true) {
+		Point pC1, pC2;
+		inputSource >> pC1.a >> pC1.b >> pC2.a >> pC2.b;
+		if (!inputSource)
+			break;
+		Point p = m_curve.add(pC1, m_curve.minus(pC2));
+		char c = m_curve.findPoint(p);
+		this->m_writeResult << c;
+	}
+	return *this;
 }
